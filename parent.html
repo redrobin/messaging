@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.js"></script>
+        <script type="text/javascript" src="js/porthole/porthole.js"></script>
+
+        <script type="text/javascript">
+
+            var navProxy;
+            var searchProxy;
+            var mainProxy;
+
+            function onNavMessage(messageEvent) {
+                searchProxy.post(messageEvent.data);
+                mainProxy.post(messageEvent.data);
+            }
+
+            function onSearchMessage(messageEvent) {
+                navProxy.post(messageEvent.data);
+                mainProxy.post(messageEvent.data);
+            }
+
+            function onMainMessage(messageEvent) {
+                navProxy.post(messageEvent.data);
+                searchProxy.post(messageEvent.data);
+            }
+
+            window.onload = function() {
+                navProxy = new Porthole.WindowProxy('nav-proxy.html','navFrame');
+                navProxy.addEventListener(onNavMessage);
+
+                searchProxy = new Porthole.WindowProxy('search-proxy.html','searchFrame');
+                searchProxy.addEventListener(onSearchMessage);
+
+                mainProxy = new Porthole.WindowProxy('main-proxy.html','mainFrame');
+                mainProxy.addEventListener(onMainMessage);
+            }
+
+        </script>
+
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    </head>
+
+    <body>
+
+       <div class="container-fluid">
+
+           <div class="row-fluid">
+
+               <iframe id="navFrame" name="navFrame" class="span4" src="nav.html" height="800px" frameBorder="0"></iframe>
+
+               <div class="span8" height="800px">
+                   <div class="row">
+                       <iframe id="searchFrame" name="searchFrame" src="search.html" class="span12" frameBorder="0" height="80px"></iframe>
+                       <hr class="span11"/>
+                       <iframe id="mainFrame" name="mainFrame" src="main.html" class="span12" frameBorder="0" height="200px"></iframe>
+                   </div>
+               </div>
+
+           </div>
+
+       </div>
+
+    </body>
+
+</html>

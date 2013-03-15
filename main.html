@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.js"></script>
+        <script type="text/javascript" src="js/porthole/porthole.js"></script>
+
+        <script type="text/javascript">
+
+            function MainCtrl($scope) {
+
+                $scope.searchText = "";
+                $scope.navPanelName = "[None]";
+
+                $scope.windowProxy = new Porthole.WindowProxy('parent-proxy.html');
+
+                $scope.onMessage = function(messageEvent) {
+                    if(messageEvent.data.event === "navClick") {
+                        $scope.navPanelName = messageEvent.data.navButton;
+                        $scope.$apply();
+                    }
+                    else if(messageEvent.data.event === 'searchEvent') {
+                        $scope.searchText = messageEvent.data.searchText;
+                        $scope.$apply();
+                    }
+                }
+
+                $scope.getSearchText = function() {
+                    return $scope.searchText == '' ? '[None]' : $scope.searchText;
+                }
+
+                $scope.getNavPanelName = function() {
+                    return $scope.navPanelName;
+                }
+
+                $scope.windowProxy.addEventListener($scope.onMessage);
+
+            }
+
+        </script>
+
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    </head>
+
+    <body>
+
+       <div class="container-fluid" ng-controller="MainCtrl">
+
+           <div class="row-fluid">
+
+               <div class="span12">
+                  <h3>This is the main panel</h3>
+                  <hr />
+                  <p><strong>Current Navigation: </strong>{{getNavPanelName()}}</p>
+                  <p><strong>Current Search Term: </strong>{{getSearchText()}}</p>
+                  <hr/>
+               </div>
+
+           </div>
+
+       </div>
+
+    </body>
+
+</html>

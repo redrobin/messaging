@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" ng-app>
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.js"></script>
+        <script type="text/javascript" src="js/porthole/porthole.js"></script>
+
+        <script type="text/javascript">
+
+            var windowProxy;
+
+            function onMessage(messageEvent) {
+                //alert('NAV RX: ' + messageEvent.origin);
+            }
+
+            window.onload = function() {
+                windowProxy = new Porthole.WindowProxy('parent-proxy.html');
+                windowProxy.addEventListener(onMessage);
+            }
+        </script>
+
+        <script type="text/javascript">
+
+            function NavCtrl($scope) {
+
+                $scope.navClick = function(buttonName) {
+                    windowProxy.post({
+                        event: 'navClick',
+                        navButton : buttonName
+                    });
+                }
+
+            }
+
+        </script>
+
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    </head>
+
+    <body>
+
+       <div class="container-fluid" ng-controller="NavCtrl">
+
+           <div class="row-fluid">
+
+               <div class="span12">
+                   <h2>Navigation</h2>
+                   <button class="btn-block btn-danger" ng-click="navClick('priority')">Priority</button>
+                   <button class="btn-block btn-primary" ng-click="navClick('open')">Open Items</button>
+                   <button class="btn-block btn-inverse" ng-click="navClick('closed')">Closed Items</button>
+               </div>
+
+           </div>
+
+       </div>
+
+    </body>
+
+</html>

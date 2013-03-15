@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" ng-app xmlns="http://www.w3.org/1999/html">
+
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.js"></script>
+        <script type="text/javascript" src="js/porthole/porthole.js"></script>
+
+        <script type="text/javascript">
+
+            function SearchCtrl($scope, $window) {
+
+                $scope.searchPrompt = "Search All...";
+                $scope.windowProxy = new Porthole.WindowProxy('parent-proxy.html');
+
+                $scope.onMessage = function(messageEvent) {
+                    if(messageEvent.data.event === "navClick") {
+                        $scope.searchPrompt = "Search " + messageEvent.data.navButton + "...";
+                        $scope.searchText = '';
+                        $scope.doSearch();
+                        $scope.$apply();
+                    }
+                }
+
+                $scope.getSearchPrompt = function() {
+                    return $scope.searchPrompt;
+                }
+
+                $scope.doSearch = function() {
+                    $scope.windowProxy.post({
+                        event: 'searchEvent',
+                        searchText : $scope.searchText
+                    });
+                }
+
+                $scope.windowProxy.addEventListener($scope.onMessage);
+
+            }
+
+        </script>
+
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    </head>
+
+    <body>
+
+       <div class="container-fluid" ng-controller="SearchCtrl">
+
+           <div class="row-fluid">
+
+               <div class="span10" style="padding-top: 20px">
+                   <form class="form-search span12">
+                       <div class="input-prepend span12">
+                           <button type="submit" class="btn" ng-click="doSearch()"><i class="icon-search"></i></button>
+                           <input type="text" placeholder="{{getSearchPrompt()}}" class="input-block-level search-query" ng-model="searchText" />
+                       </div>
+                   </form>
+               </div>
+
+           </div>
+
+       </div>
+
+    </body>
+
+</html>
